@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta SEO -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A responsive blog featuring technology, lifestyle, and more">
+    <meta name="keywords" content="blog, technology, lifestyle, articles">
+    <meta name="author" content="Your Name">
+    
+    <!-- Facebook OpenGraph -->
+    <meta property="og:title" content="Responsive Blog">
+    <meta property="og:description" content="A responsive blog featuring technology, lifestyle, and more">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourblogurl.com">
+    <meta property="og:image" content="https://yourblogurl.com/images/og-image.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <title>Responsive Blog</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">My Blog</h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Categories</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="featured-post">
+            <!-- Featured post will be inserted here by JavaScript -->
+        </section>
+
+        <div class="blog-layout">
+            <section class="blog-posts">
+                <!-- Blog posts will be inserted here by JavaScript from Blog_data.csv -->
+                <div class="loading">Loading posts...</div>
+            </section>
+
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <h3>About Me</h3>
+                    <img src="https://via.placeholder.com/150" alt="Author" class="author-img">
+                    <p>Welcome to my blog! I write about technology, lifestyle, and more.</p>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h3>Categories</h3>
+                    <ul class="categories">
+                        <!-- Categories will be populated from Blog_data.csv -->
+                    </ul>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h3>Subscribe</h3>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Your email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 My Blog. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // This script will load and display the blog posts from Blog_data.csv
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('Blog_data.csv')
+                .then(response => response.text())
+                .then(data => {
+                    const posts = parseCSV(data);
+                    displayPosts(posts);
+                    displayFeaturedPost(posts[0]); // First post as featured
+                    displayCategories(posts);
+                })
+                .catch(error => console.error('Error loading blog data:', error));
+
+            // Mobile menu toggle
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+            menuBtn.addEventListener('click', () => {
+                mainNav.classList.toggle('show');
+            });
+        });
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const posts = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                const values = lines[i].split(',');
+                const post = {};
+                
+                for (let j = 0; j < headers.length; j++) {
+                    post[headers[j]] = values[j] ? values[j].trim() : '';
+                }
+                
+                posts.push(post);
+            }
+            
+            return posts;
+        }
+
+        function displayPosts(posts) {
+            const postsContainer = document.querySelector('.blog-posts');
+            postsContainer.innerHTML = '';
+            
+            posts.forEach(post => {
+                const postEl = document.createElement('article');
+                postEl.className = 'post-card';
+                postEl.innerHTML = `
+                    <div class="post-image">
+                        <img src="${post['Image URL']}" alt="${post.Title}">
+                        <span class="post-label">${post.Label}</span>
+                    </div>
+                    <div class="post-content">
+                        <h2><a href="post.html?title=${encodeURIComponent(post.Title)}">${post.Title}</a></h2>
+                        <div class="post-meta">
+                            <span class="post-author">By ${post.Author}</span>
+                            <span class="post-date">${post.Date}</span>
+                        </div>
+                        <p class="post-excerpt">${post.Description}</p>
+                        <a href="post.html?title=${encodeURIComponent(post.Title)}" class="read-more">Read More</a>
+                    </div>
+                `;
+                postsContainer.appendChild(postEl);
+            });
+        }
+
+        function displayFeaturedPost(post) {
+            const featuredContainer = document.querySelector('.featured-post');
+            featuredContainer.innerHTML = `
+                <article class="featured-post-card">
+                    <div class="featured-image">
+                        <img src="${post['Image URL']}" alt="${post.Title}">
+                    </div>
+                    <div class="featured-content">
+                        <span class="featured-label">Featured • ${post.Label}</span>
+                        <h2><a href="post.html?title=${encodeURIComponent(post.Title)}">${post.Title}</a></h2>
+                        <div class="post-meta">
+                            <span class="post-author">By ${post.Author}</span>
+                            <span class="post-date">${post.Date}</span>
+                        </div>
+                        <p class="post-excerpt">${post.Description}</p>
+                        <a href="post.html?title=${encodeURIComponent(post.Title)}" class="read-more">Read More</a>
+                    </div>
+                </article>
+            `;
+        }
+
+        function displayCategories(posts) {
+            const categoriesContainer = document.querySelector('.categories');
+            const categories = new Set(posts.map(post => post.Label));
+            
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="#">${category}</a>`;
+                categoriesContainer.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
