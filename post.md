@@ -1,27 +1,26 @@
 ---
-title: "Post Title"
+title: "Your Post Title"
 date: YYYY-MM-DD
-author: Author Name
-label: Category
-image: /path/to/image.jpg
+author: "Author Name"
+label: "Category"
+image: "/path/to/image.jpg"
 ---
 
-# Post Title
+# Your Post Title
 
-![Featured Image](/path/to/image.jpg)
+![Featured Image](path/to/image.jpg)
 
 Your blog post content goes here. You can use Markdown formatting:
 
-- Lists
+## Section Heading
+
+- Bullet point lists
 - **Bold text**
 - *Italic text*
 - [Links](https://example.com)
 
-## Subheading
-
-More content...
+### Code Blocks
 
 ```python
-# Code blocks
 def example():
     print("Hello World")
