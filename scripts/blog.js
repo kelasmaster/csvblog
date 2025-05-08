@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // For GitHub Pages deployment (alternative approach)
 async function loadPostsFromGitHub(username, repo, branch) {
     try {
-        const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/posts?ref=${branch}`);
+        const response = await fetch(`https://api.github.com/repos/${kelasmaster}/${csvblog}/contents/posts?ref=${main}`);
         const files = await response.json();
         
         const posts = [];
