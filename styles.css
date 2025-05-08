@@ -378,3 +378,125 @@ img {
         font-size: 1.5rem;
     }
 }
+/* Post Page Specific Styles */
+.post-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.post-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.post-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+}
+
+.post-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    color: var(--gray-color);
+    font-size: 0.95rem;
+}
+
+.post-category {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.2rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+}
+
+.post-featured-image {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    margin: 1rem 0 2rem;
+}
+
+.post-body {
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.post-body p {
+    margin-bottom: 1.5rem;
+}
+
+.post-body img {
+    max-width: 100%;
+    height: auto;
+    margin: 2rem auto;
+    display: block;
+    border-radius: var(--border-radius);
+}
+
+.post-body h2, 
+.post-body h3, 
+.post-body h4 {
+    margin: 2rem 0 1rem;
+    color: var(--secondary-color);
+}
+
+.post-body ul, 
+.post-body ol {
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+}
+
+.post-body li {
+    margin-bottom: 0.5rem;
+}
+
+.post-body blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    color: #555;
+    font-style: italic;
+}
+
+.post-body pre {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 2rem 0;
+}
+
+.post-body code {
+    font-family: 'Courier New', monospace;
+    background: #f5f5f5;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
+
+.post-footer {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.error {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.error h2 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+/* Category filter active state */
+.categories a.active {
+    color: var(--accent-color);
+    font-weight: bold;
+}
