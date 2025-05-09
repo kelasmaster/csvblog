@@ -424,3 +424,34 @@ img {
     color: #666;
     grid-column: 1 / -1;
 }
+
+/* Routing transitions */
+#blog-container, #post-container {
+    transition: opacity 0.3s ease;
+}
+
+/* Error states */
+.error {
+    background: #ffebee;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.error button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
