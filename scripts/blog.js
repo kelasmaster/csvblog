@@ -1,4 +1,28 @@
 // scripts/blog.js
+async function initBlog() {
+    try {
+        // Load posts manifest
+        const response = await fetch('posts/manifest.json');
+        if (!response.ok) throw new Error('Failed to load posts');
+        
+        const posts = await response.json();
+        window.blogPosts = posts; // Store for single post view
+        
+        displayFeaturedPost(posts[0]);
+        displayPosts(posts.slice(1));
+        displayCategories(posts);
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('blog-container').innerHTML = `
+            <div class="error">
+                <p>Failed to load posts. Please try again later.</p>
+                <button onclick="location.reload()">Retry</button>
+            </div>
+        `;
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Post manifest - update with your actual posts
     const postsManifest = [
