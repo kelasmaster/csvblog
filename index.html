@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta SEO -->
+     <!-- Meta SEO -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A responsive blog featuring technology, lifestyle, and more">
@@ -26,6 +26,10 @@
     <!-- Optional syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+        // Initialize global variable
+        window.blogPosts = [];
+    </script>
 </head>
 <body>
     <header class="header">
@@ -45,25 +49,17 @@
         </div>
     </header>
 
-    <main class="container">
-        <section class="featured-post">
-            <!-- Featured post will be inserted here by JavaScript -->
-            <div class="loading-posts">
-                <div class="spinner"></div>
-                <p>Loading featured post...</p>
-            </div>
-        </section>
+    <main class="container" id="app">
+        <!-- Dynamic content will be inserted here -->
+        <div id="blog-container">
+            <!-- Blog list view will go here -->
+        </div>
+        <div id="post-container" style="display:none;">
+            <!-- Single post view will go here -->
+        </div>
+    </main>
 
-        <div class="blog-layout">
-            <section class="blog-posts">
-                <!-- Blog posts will be inserted here by JavaScript -->
-                <div class="loading-posts">
-                    <div class="spinner"></div>
-                    <p>Loading blog posts...</p>
-                </div>
-            </section>
-
-            <aside class="sidebar">
+      <aside class="sidebar">
                 <div class="sidebar-widget" id="about">
                     <h3>About Me</h3>
                     <img src="https://via.placeholder.com/150" alt="Author" class="author-img">
@@ -108,22 +104,76 @@
             </div>
         </div>
     </footer>
-
-    <!-- JavaScript Files -->
-    <script src="scripts/blog.js"></script>
     
-    <!-- Small inline script for basic functionality -->
+    <script src="scripts/blog.js"></script>
     <script>
-        // Update copyright year
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        
-        // Simple form handler
-        document.querySelector('.subscribe-form')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input').value;
-            alert(`Thanks for subscribing with ${email}! We'll be in touch.`);
-            this.reset();
+        // Handle URL routing
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            
+            if (slug) {
+                loadSinglePost(slug);
+            } else {
+                document.getElementById('blog-container').style.display = 'block';
+                initBlog();
+            }
         });
+
+        async function loadSinglePost(slug) {
+            document.getElementById('blog-container').style.display = 'none';
+            const postContainer = document.getElementById('post-container');
+            postContainer.style.display = 'block';
+            postContainer.innerHTML = '<div class="loading">Loading post...</div>';
+
+            try {
+                // Try to find post in already loaded posts
+                const post = window.blogPosts.find(p => p.slug === slug);
+                
+                if (post) {
+                    renderPost(post, postContainer);
+                } else {
+                    // Fallback: load single post directly
+                    const response = await fetch(`posts/${slug}.md`);
+                    if (!response.ok) throw new Error('Post not found');
+                    
+                    const content = await response.text();
+                    const parsedPost = parseMarkdownFile(content, slug);
+                    renderPost(parsedPost, postContainer);
+                }
+            } catch (error) {
+                postContainer.innerHTML = `
+                    <div class="error">
+                        <h2>Post Not Found</h2>
+                        <p>The requested post could not be loaded.</p>
+                        <a href="/" class="back-to-blog">← Back to Blog</a>
+                    </div>
+                `;
+            }
+        }
+
+        function renderPost(post, container) {
+            container.innerHTML = `
+                <article class="full-post">
+                    <div class="post-header">
+                        <h1>${post.title}</h1>
+                        <div class="post-meta">
+                            <span class="post-author">By ${post.author}</span>
+                            <span class="post-date">${formatDate(post.date)}</span>
+                            <span class="post-category">${post.label}</span>
+                        </div>
+                        <img src="${post.image}" alt="${post.title}" class="post-featured-image">
+                    </div>
+                    <div class="post-body">${marked.parse(post.content)}</div>
+                    <a href="/" class="back-to-blog">← Back to Blog</a>
+                </article>
+            `;
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
     </script>
 </body>
 </html>
