@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting...</title>
+    <script>
+        // Handle client-side routing
+        const path = window.location.pathname;
+        if (path === '/post.html') {
+            const slug = new URLSearchParams(window.location.search).get('slug');
+            if (slug) {
+                window.location.href = `/?slug=${slug}`;
+            } else {
+                window.location.href = '/';
+            }
+        } else {
+            window.location.href = '/';
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting to homepage...</p>
+</body>
+</html>
