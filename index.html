@@ -1,178 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <!-- Meta SEO -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A responsive blog featuring technology, lifestyle, and more">
-    <meta name="keywords" content="blog, technology, lifestyle, articles">
-    <meta name="author" content="Your Name">
-    
-    <!-- Facebook OpenGraph -->
-    <meta property="og:title" content="Responsive Blog">
-    <meta property="og:description" content="A responsive blog featuring technology, lifestyle, and more">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yourblogurl.com">
-    <meta property="og:image" content="https://yourblogurl.com/images/og-image.jpg">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <title>Responsive Blog</title>
+    <title>My Blog</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Marked.js for markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Optional syntax highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-    <script>
-        // Initialize global variable
-        window.blogPosts = [];
-    </script>
+    <style>
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+        }
+        .error {
+            color: red;
+            padding: 2rem;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">My Blog</h1>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="#categories">Categories</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-            <button class="mobile-menu-btn" aria-label="Toggle menu">
-                <i class="fas fa-bars"></i>
-            </button>
+            <h1><a href="/">My Blog</a></h1>
         </div>
     </header>
 
     <main class="container" id="app">
-        <!-- Dynamic content will be inserted here -->
-        <div id="blog-container">
-            <!-- Blog list view will go here -->
-        </div>
-        <div id="post-container" style="display:none;">
-            <!-- Single post view will go here -->
-        </div>
-    </main>
-
-      <aside class="sidebar">
-                <div class="sidebar-widget" id="about">
-                    <h3>About Me</h3>
-                    <img src="https://via.placeholder.com/150" alt="Author" class="author-img">
-                    <p>Welcome to my blog! I write about technology, lifestyle, and more. Join me as I explore interesting topics and share insights.</p>
-                </div>
-                
-                <div class="sidebar-widget" id="categories">
-                    <h3>Categories</h3>
-                    <ul class="categories">
-                        <!-- Categories will be populated from posts -->
-                        <li><a href="#" data-category="all" class="active">All</a></li>
-                    </ul>
-                </div>
-                
-                <div class="sidebar-widget" id="subscribe">
-                    <h3>Subscribe</h3>
-                    <form class="subscribe-form">
-                        <input type="email" placeholder="Your email" required>
-                        <button type="submit">Subscribe</button>
-                    </form>
-                </div>
-
-                <div class="sidebar-widget" id="contact">
-                    <h3>Contact</h3>
-                    <p>Have questions or suggestions?</p>
-                    <a href="mailto:contact@example.com" class="contact-email">
-                        <i class="fas fa-envelope"></i> contact@example.com
-                    </a>
-                </div>
-            </aside>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; <span id="current-year"></span> My Blog. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        <div id="loading" class="loading">Loading posts...</div>
+        <div id="blog-container" style="display:none;">
+            <section class="featured-post" id="featured-post"></section>
+            <div class="blog-layout">
+                <section class="blog-posts" id="blog-posts"></section>
+                <aside class="sidebar">
+                    <div class="sidebar-widget" id="categories">
+                        <h3>Categories</h3>
+                        <ul class="categories"></ul>
+                    </div>
+                </aside>
             </div>
         </div>
-    </footer>
-    
+        <div id="post-container" style="display:none;"></div>
+    </main>
+
     <script src="scripts/blog.js"></script>
     <script>
-        // Handle URL routing
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const slug = urlParams.get('slug');
+        // Simple router
+        document.addEventListener('DOMContentLoaded', async () => {
+            const slug = new URLSearchParams(window.location.search).get('slug');
+            const blogContainer = document.getElementById('blog-container');
+            const postContainer = document.getElementById('post-container');
+            const loading = document.getElementById('loading');
             
             if (slug) {
-                loadSinglePost(slug);
-            } else {
-                document.getElementById('blog-container').style.display = 'block';
-                initBlog();
-            }
-        });
-
-        async function loadSinglePost(slug) {
-            document.getElementById('blog-container').style.display = 'none';
-            const postContainer = document.getElementById('post-container');
-            postContainer.style.display = 'block';
-            postContainer.innerHTML = '<div class="loading">Loading post...</div>';
-
-            try {
-                // Try to find post in already loaded posts
-                const post = window.blogPosts.find(p => p.slug === slug);
-                
-                if (post) {
-                    renderPost(post, postContainer);
-                } else {
-                    // Fallback: load single post directly
+                // Load single post
+                try {
                     const response = await fetch(`posts/${slug}.md`);
                     if (!response.ok) throw new Error('Post not found');
                     
                     const content = await response.text();
-                    const parsedPost = parseMarkdownFile(content, slug);
-                    renderPost(parsedPost, postContainer);
+                    const post = parseMarkdown(content, slug);
+                    
+                    blogContainer.style.display = 'none';
+                    postContainer.style.display = 'block';
+                    loading.style.display = 'none';
+                    
+                    renderPost(post);
+                } catch (error) {
+                    loading.innerHTML = `<div class="error">Error loading post. <a href="/">Back to blog</a></div>`;
+                    console.error(error);
                 }
-            } catch (error) {
-                postContainer.innerHTML = `
-                    <div class="error">
-                        <h2>Post Not Found</h2>
-                        <p>The requested post could not be loaded.</p>
-                        <a href="/" class="back-to-blog">← Back to Blog</a>
-                    </div>
-                `;
+            } else {
+                // Load blog list
+                try {
+                    await initBlog();
+                    blogContainer.style.display = 'block';
+                    loading.style.display = 'none';
+                } catch (error) {
+                    loading.innerHTML = `<div class="error">Error loading posts. <a href="/">Refresh</a></div>`;
+                    console.error(error);
+                }
             }
+        });
+
+        function parseMarkdown(content, slug) {
+            const frontMatter = content.match(/^---\n([\s\S]*?)\n---/)[1];
+            const markdown = content.replace(/^---\n[\s\S]*?\n---\n/, '');
+            
+            const metadata = {};
+            frontMatter.split('\n').forEach(line => {
+                const match = line.match(/^([^:]+):\s*(.*)/);
+                if (match) metadata[match[1].trim()] = match[2].trim().replace(/^['"](.*)['"]$/, '$1');
+            });
+            
+            return {
+                ...metadata,
+                content: markdown,
+                html: marked.parse(markdown),
+                slug: slug
+            };
         }
 
-        function renderPost(post, container) {
-            container.innerHTML = `
+        function renderPost(post) {
+            document.getElementById('post-container').innerHTML = `
                 <article class="full-post">
-                    <div class="post-header">
-                        <h1>${post.title}</h1>
-                        <div class="post-meta">
-                            <span class="post-author">By ${post.author}</span>
-                            <span class="post-date">${formatDate(post.date)}</span>
-                            <span class="post-category">${post.label}</span>
-                        </div>
-                        <img src="${post.image}" alt="${post.title}" class="post-featured-image">
+                    <h1>${post.title}</h1>
+                    <div class="post-meta">
+                        <span>By ${post.author}</span>
+                        <span>${new Date(post.date).toLocaleDateString()}</span>
                     </div>
-                    <div class="post-body">${marked.parse(post.content)}</div>
-                    <a href="/" class="back-to-blog">← Back to Blog</a>
+                    <img src="${post.image}" alt="${post.title}" class="post-image">
+                    <div class="post-content">${post.html}</div>
+                    <a href="/" class="back-link">← Back to all posts</a>
                 </article>
             `;
-        }
-
-        function formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString(undefined, options);
         }
     </script>
 </body>
