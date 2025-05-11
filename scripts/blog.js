@@ -1,20 +1,19 @@
 // scripts/blog.js
-async function initBlog() {
+document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Load post list
         const response = await fetch('posts/manifest.json');
         if (!response.ok) throw new Error('Failed to load posts');
         
         const posts = await response.json();
         
-        // Display featured post (most recent)
-        const featuredPost = posts[0];
+        // Display featured post
+        const featured = posts[0];
         document.getElementById('featured-post').innerHTML = `
             <article class="featured-post-card">
-                <img src="${featuredPost.image}" alt="${featuredPost.title}">
+                <img src="${featured.image}" alt="${featured.title}">
                 <div class="featured-content">
-                    <h2><a href="?slug=${featuredPost.slug}">${featuredPost.title}</a></h2>
-                    <p>${featuredPost.description}</p>
+                    <h2><a href="posts/${featured.slug}.html">${featured.title}</a></h2>
+                    <p>${featured.description}</p>
                 </div>
             </article>
         `;
@@ -25,20 +24,15 @@ async function initBlog() {
             postsContainer.innerHTML += `
                 <article class="post-card">
                     <img src="${post.image}" alt="${post.title}">
-                    <h3><a href="?slug=${post.slug}">${post.title}</a></h3>
+                    <h3><a href="posts/${post.slug}.html">${post.title}</a></h3>
                     <p>${post.description}</p>
                 </article>
             `;
         });
-        
-        // Display categories
-        const categories = [...new Set(posts.map(post => post.label))];
-        const categoriesContainer = document.querySelector('.categories');
-        categories.forEach(category => {
-            categoriesContainer.innerHTML += `<li><a href="#" data-category="${category}">${category}</a></li>`;
-        });
     } catch (error) {
-        console.error('Error loading blog:', error);
-        throw error;
+        document.getElementById('blog-posts').innerHTML = `
+            <div class="error">Failed to load posts. Please try again later.</div>
+        `;
+        console.error(error);
     }
-}
+});
