@@ -2,21 +2,19 @@
     {
         "slug": "future-of-ai",
         "title": "The Future of AI",
-        "description": "Exploring artificial intelligence advancements",
+        "description": "Exploring how AI will change our world",
         "image": "https://images.unsplash.com/photo-1677442135136-760c813a743e",
         "label": "Technology",
         "date": "2023-06-15",
-        "author": "Jane Doe",
-        "content": "This is the full content of the post..."
+        "author": "Jane Doe"
     },
     {
         "slug": "sustainable-living",
         "title": "Sustainable Living",
-        "description": "Eco-friendly lifestyle tips",
+        "description": "Tips for eco-friendly living",
         "image": "https://images.unsplash.com/photo-1466611653911-95081537e5b7",
         "label": "Lifestyle",
         "date": "2023-06-10",
-        "author": "John Smith",
-        "content": "This is the full content of the post..."
+        "author": "John Smith"
     }
 ]
